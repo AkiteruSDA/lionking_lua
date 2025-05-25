@@ -223,6 +223,11 @@ local function printData()
     text(x, y, geyserStr);
 	y = y + 10;
     local simbaX = read_u16(SIMBA_X);
+    local simbaY = read_u16(SIMBA_Y);
+    text(x, y, "Simba X: " .. simbaX);
+    y = y + 10;
+    text(x, y, "Simba Y: " .. simbaY);
+    y = y + 10;
     local pixel = "o o o o";
     if (simbaX % 4 == 0) then
         pixel = "x o o o";
