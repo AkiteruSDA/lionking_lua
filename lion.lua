@@ -10,8 +10,14 @@ end
 local function read_u8(addr)
 	return memory.read_u8(addr);
 end
+local function read_s8(addr)
+	return memory.read_s8(addr);
+end
 local function read_u16(addr)
 	return memory.read_u16_le(addr);
+end
+local function read_s16(addr)
+	return memory.read_s16_le(addr);
 end
 local function isInactiveGeyser(addr)
 	return read_u16(addr + 0x30) == 0xDC17;
@@ -23,6 +29,9 @@ if (isGenesis()) then
 	read_u16 = function(addr)
 		return memory.read_u16_be(addr);
 	end
+    read_s16 = function(addr)
+        return memory.read_s16_be(addr);
+    end
 	isInactiveGeyser = function(addr)
 		return read_u16(addr + 0x32) == 0x35F0;
 	end
@@ -37,7 +46,13 @@ local LINKED_START = 0x76;
 local LINKED_END = 0x78;
 local LINKED_FREE = 0x7A;
 local SIMBA_X = 0xB21B;
+local SIMBA_SUB_X = 0xB248;
 local SIMBA_Y = 0xB21D;
+local SIMBA_SUB_Y = 0xB24A;
+local SIMBA_SPD_X = 0xB24D;
+local SIMBA_SUBSPD_X = 0xB24C;
+local SIMBA_SPD_Y = 0xB251;
+local SIMBA_SUBSPD_Y = 0xB250;
 local RNG_A = 0x1E00;
 local RNG_B = 0x1E01;
 local RNG_C = 0x1E02;
@@ -48,7 +63,13 @@ if (isGenesis()) then
 	LINKED_END = 0xC352;
 	LINKED_FREE = 0xC34E;
 	SIMBA_X = 0x93D6;
+    SIMBA_SUB_X = 0x9402;
 	SIMBA_Y = 0x93D8;
+    SIMBA_SUB_Y = 0x9404;
+    SIMBA_SPD_X = 0x9406;
+    SIMBA_SUBSPD_X = 0x9408;
+    SIMBA_SPD_Y = 0x940A;
+    SIMBA_SUBSPD_Y = 0x940C;
 	RNG_A = 0x81AF;
 	RNG_B = 0x81AE;
 	RNG_C = 0x81AD;
@@ -223,10 +244,20 @@ local function printData()
     text(x, y, geyserStr);
 	y = y + 10;
     local simbaX = read_u16(SIMBA_X);
+    local simbaSubX = read_u8(SIMBA_SUB_X);
+    local simbaSpdX = read_s16(SIMBA_SPD_X);
+    local simbaSubSpdX = read_u8(SIMBA_SUBSPD_X);
     local simbaY = read_u16(SIMBA_Y);
-    text(x, y, "Simba X: " .. simbaX);
+    local simbaSubY = read_u8(SIMBA_SUB_Y);
+    local simbaSpdY = read_s16(SIMBA_SPD_Y);
+    local simbaSubSpdY = read_u8(SIMBA_SUBSPD_Y);
+    text(x, y, "Simba X Pos: " .. simbaX .. ":" .. simbaSubX);
     y = y + 10;
-    text(x, y, "Simba Y: " .. simbaY);
+    text(x, y, "Simba X Spd: " .. simbaSpdX .. ":" .. simbaSubSpdX);
+    y = y + 10;
+    text(x, y, "Simba Y Pos: " .. simbaY .. ":" .. simbaSubY);
+    y = y + 10;
+    text(x, y, "Simba Y Spd: " .. simbaSpdY .. ":" .. simbaSubSpdY);
     y = y + 10;
     local pixel = "o o o o";
     if (simbaX % 4 == 0) then
