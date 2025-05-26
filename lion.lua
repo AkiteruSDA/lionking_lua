@@ -3,41 +3,41 @@
 -- Small dirty edit by SBDWolf to make it work with the bsnesv115+ core (set memory domain to WRAM)
 
 local function isGenesis()
-	return gameinfo.getromhash() == "E37BF6813648EC5E8BDBD2F7070010F8";
+    return gameinfo.getromhash() == "E37BF6813648EC5E8BDBD2F7070010F8";
 end
 
 -- Util functions --
 local function read_u8(addr)
-	return memory.read_u8(addr);
+    return memory.read_u8(addr);
 end
 local function read_s8(addr)
-	return memory.read_s8(addr);
+    return memory.read_s8(addr);
 end
 local function read_u16(addr)
-	return memory.read_u16_le(addr);
+    return memory.read_u16_le(addr);
 end
 local function read_s16(addr)
-	return memory.read_s16_le(addr);
+    return memory.read_s16_le(addr);
 end
 local function isInactiveGeyser(addr)
-	return read_u16(addr + 0x30) == 0xDC17;
+    return read_u16(addr + 0x30) == 0xDC17;
 end
 local function isActiveGeyser(addr)
-	return read_u16(addr + 0x30) == 0xD8CC;
+    return read_u16(addr + 0x30) == 0xD8CC;
 end
 if (isGenesis()) then
-	read_u16 = function(addr)
-		return memory.read_u16_be(addr);
-	end
+    read_u16 = function(addr)
+        return memory.read_u16_be(addr);
+    end
     read_s16 = function(addr)
         return memory.read_s16_be(addr);
     end
-	isInactiveGeyser = function(addr)
-		return read_u16(addr + 0x32) == 0x35F0;
-	end
-	isActiveGeyser = function(addr)
-		return read_u16(addr + 0x32) == 0x3270;
-	end
+    isInactiveGeyser = function(addr)
+        return read_u16(addr + 0x32) == 0x35F0;
+    end
+    isActiveGeyser = function(addr)
+        return read_u16(addr + 0x32) == 0x3270;
+    end
 end
 -- Util functions end--
 
@@ -58,30 +58,30 @@ local RNG_B = 0x1E01;
 local RNG_C = 0x1E02;
 local RNG_ROLL = 0xC0CBBA;
 if (isGenesis()) then
-	-- Set correct addresses for Genesis
-	LINKED_START = 0xC350;
-	LINKED_END = 0xC352;
-	LINKED_FREE = 0xC34E;
-	SIMBA_X = 0x93D6;
+    -- Set correct addresses for Genesis
+    LINKED_START = 0xC350;
+    LINKED_END = 0xC352;
+    LINKED_FREE = 0xC34E;
+    SIMBA_X = 0x93D6;
     SIMBA_SUB_X = 0x9402;
-	SIMBA_Y = 0x93D8;
+    SIMBA_Y = 0x93D8;
     SIMBA_SUB_Y = 0x9404;
     SIMBA_SPD_X = 0x9406;
     SIMBA_SUBSPD_X = 0x9408;
     SIMBA_SPD_Y = 0x940A;
     SIMBA_SUBSPD_Y = 0x940C;
-	RNG_A = 0x81AF;
-	RNG_B = 0x81AE;
-	RNG_C = 0x81AD;
-	RNG_ROLL = 0x000B28;
+    RNG_A = 0x81AF;
+    RNG_B = 0x81AE;
+    RNG_C = 0x81AD;
+    RNG_ROLL = 0x000B28;
 end
 -- Constants end --
 
 -- Set memory domain --
 if (isGenesis()) then
-	memory.usememorydomain("68K RAM");
+    memory.usememorydomain("68K RAM");
 else
-	memory.usememorydomain("WRAM");
+    memory.usememorydomain("WRAM");
 end
 -- Set memory domain end --
 
@@ -105,8 +105,8 @@ end
 local function rol(val, carry, mask)
     mask = mask or 0xFF;
     val = val & mask;
-	local nextCarry = (val & 0x80) >> 7;
-	local next = ((val << 1) & mask) | carry;
+    local nextCarry = (val & 0x80) >> 7;
+    local next = ((val << 1) & mask) | carry;
     return {next, nextCarry};
 end
 
@@ -114,28 +114,28 @@ local function ror(val, carry, mask)
     mask = mask or 0xFF;
     val = val & mask;
     local nextCarry = val & 1;
-	local next = (val >> 1) | (carry << 7);
+    local next = (val >> 1) | (carry << 7);
     return {next, nextCarry};
 end
 
 local function sbc(acc, val, carry, mask)
     mask = mask or 0xFF;
-	acc = acc & mask;
-	val = val & mask;
+    acc = acc & mask;
+    val = val & mask;
     local nextCarry = 0;
     if acc >= val then
         nextCarry = 1;
     end
-	local next = (acc - val - 1 + carry) & mask;
+    local next = (acc - val - 1 + carry) & mask;
     return {next, nextCarry};
 end
 -- (Partially) implement some 65C816 instructions for the RNG simulator end --
 
 local function scaler()
-	xmOff = client.borderwidth();
-	ymOff = client.borderheight();
-	xm = (client.screenwidth() - 2 * xmOff) / 256;
-	ym = (client.screenheight() - 2 * ymOff) / 224;
+    xmOff = client.borderwidth();
+    ymOff = client.borderheight();
+    xm = (client.screenwidth() - 2 * xmOff) / 256;
+    ym = (client.screenheight() - 2 * ymOff) / 224;
 end
 
 local function hexStr(val, length)
@@ -242,7 +242,7 @@ local function printData()
         y = y + 10;
     end
     text(x, y, geyserStr);
-	y = y + 10;
+    y = y + 10;
     local simbaX = read_u16(SIMBA_X);
     local simbaSubX = read_u8(SIMBA_SUB_X);
     local simbaSpdX = read_s16(SIMBA_SPD_X);
