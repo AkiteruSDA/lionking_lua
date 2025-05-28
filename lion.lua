@@ -53,6 +53,8 @@ local SIMBA_SPD_X = 0xB24D;
 local SIMBA_SUBSPD_X = 0xB24C;
 local SIMBA_SPD_Y = 0xB251;
 local SIMBA_SUBSPD_Y = 0xB250;
+local CAMERA_X = 0xB29B;
+local CAMERA_Y = 0xB29D;
 local RNG_A = 0x1E00;
 local RNG_B = 0x1E01;
 local RNG_C = 0x1E02;
@@ -70,6 +72,8 @@ if (isGenesis()) then
     SIMBA_SUBSPD_X = 0x9408;
     SIMBA_SPD_Y = 0x940A;
     SIMBA_SUBSPD_Y = 0x940C;
+    CAMERA_X = 0x9456;
+    CAMERA_Y = 0x9458;
     RNG_A = 0x81AF;
     RNG_B = 0x81AE;
     RNG_C = 0x81AD;
@@ -251,6 +255,8 @@ local function printData()
     local simbaSubY = read_u8(SIMBA_SUB_Y);
     local simbaSpdY = read_s16(SIMBA_SPD_Y);
     local simbaSubSpdY = read_u8(SIMBA_SUBSPD_Y);
+    local cameraX = read_u16(CAMERA_X);
+    local cameraY = read_u16(CAMERA_Y);
     text(x, y, "Simba X Pos: " .. simbaX .. ":" .. simbaSubX);
     y = y + 10;
     text(x, y, "Simba X Spd: " .. simbaSpdX .. ":" .. simbaSubSpdX);
@@ -258,6 +264,10 @@ local function printData()
     text(x, y, "Simba Y Pos: " .. simbaY .. ":" .. simbaSubY);
     y = y + 10;
     text(x, y, "Simba Y Spd: " .. simbaSpdY .. ":" .. simbaSubSpdY);
+    y = y + 10;
+    text(x, y, "Camera X: " .. cameraX);
+    y = y + 10;
+    text(x, y, "Camera Y: " .. cameraY);
     y = y + 10;
     local pixel = "o o o o";
     if (simbaX % 4 == 0) then
