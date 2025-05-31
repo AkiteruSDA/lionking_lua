@@ -152,8 +152,19 @@ local function hexStr(val, length)
     return str;
 end
 
-local function text(xPos, yPos, str)
-    gui.text(xPos * xm + xmOff, yPos * ym + ymOff, str);
+local LINE_HEIGHT = 10;
+
+local function text(...)
+    local arg = {...};
+    local xPos = arg[1];
+    local currY = arg[2];
+    local lineCount = 0;
+    for i = 3, #arg do
+        gui.text(xPos * xm + xmOff, currY * ym + ymOff, arg[i]);
+        lineCount = lineCount + 1;
+        currY = arg[2] + LINE_HEIGHT * lineCount;
+    end
+    return LINE_HEIGHT * lineCount;
 end
 
 -- Simulates a roll of the RNG and returns the new seed, as well as the value that would be written to $a68e at the end of $c0cbba --
@@ -185,8 +196,7 @@ end
 local function printLinked()
     local x = 10;
     local y = 25;
-    text(x, y, "Next free: " .. hexStr(read_u16(LINKED_FREE)));
-    y = y + 10;
+    y = y + text(x, y, "Next free: " .. hexStr(read_u16(LINKED_FREE)));
     local addr = read_u16(LINKED_START);
     local i = 1;
     while addr ~= 0 do
@@ -197,8 +207,7 @@ local function printLinked()
         elseif isActiveGeyser(addr) then
             extra = "(" .. read_u16(addr + 0x4C) .. " R, " .. hexStr(read_u16(addr + 0x46), 2) .. " CD: OK)";
         end
-        text(x, y, i .. ": " .. hexStr(addr) .. " " .. extra);
-        y = y + 10;
+        y = y + text(x, y, i .. ": " .. hexStr(addr) .. " " .. extra);
         addr = read_u16(addr + 2);
         i = i + 1;
     end
@@ -218,8 +227,7 @@ local function printData()
     if prevA ~= nil and (a ~= prevA or b ~= prevB or c ~= prevC) then
         rngCountStr = "Num. rolls: " .. rngCount;
     end
-    text(x, y, "Curr. seed: " .. hexStr(a, 2) .. " " .. hexStr(b, 2) .. " " .. hexStr(c, 2));
-    y = y + 10;
+    y = y + text(x, y, "Curr. seed: " .. hexStr(a, 2) .. " " .. hexStr(b, 2) .. " " .. hexStr(c, 2));
     text(x, y, "Nexts: ");
     x = x + 30;
     prevA = a;
@@ -228,8 +236,7 @@ local function printData()
     local geyserStr = "Geyser CDs: ";
     for i = 1,10 do
         local sim = rngSim(a, b, c);
-        text(x, y, hexStr(sim[4], 2) .. " (Seed: " .. hexStr(sim[1], 2) .. " " .. hexStr(sim[2], 2) .. " " .. hexStr(sim[3], 2) .. ")");
-        y = y + 10;
+        y = y + text(x, y, hexStr(sim[4], 2) .. " (Seed: " .. hexStr(sim[1], 2) .. " " .. hexStr(sim[2], 2) .. " " .. hexStr(sim[3], 2) .. ")");
         a = sim[1];
         b = sim[2];
         c = sim[3];
@@ -242,11 +249,9 @@ local function printData()
     end
     x = x - 20;
     if rngCountStr ~= "" then
-        text(x, y, rngCountStr);
-        y = y + 10;
+        y = y + text(x, y, rngCountStr);
     end
-    text(x, y, geyserStr);
-    y = y + 10;
+    y = y + text(x, y, geyserStr);
     local simbaX = read_u16(SIMBA_X);
     local simbaSubX = read_u8(SIMBA_SUB_X);
     local simbaSpdX = read_s16(SIMBA_SPD_X);
@@ -257,18 +262,15 @@ local function printData()
     local simbaSubSpdY = read_u8(SIMBA_SUBSPD_Y);
     local cameraX = read_u16(CAMERA_X);
     local cameraY = read_u16(CAMERA_Y);
-    text(x, y, "Simba X Pos: " .. simbaX .. ":" .. simbaSubX);
-    y = y + 10;
-    text(x, y, "Simba X Spd: " .. simbaSpdX .. ":" .. simbaSubSpdX);
-    y = y + 10;
-    text(x, y, "Simba Y Pos: " .. simbaY .. ":" .. simbaSubY);
-    y = y + 10;
-    text(x, y, "Simba Y Spd: " .. simbaSpdY .. ":" .. simbaSubSpdY);
-    y = y + 10;
-    text(x, y, "Camera X: " .. cameraX);
-    y = y + 10;
-    text(x, y, "Camera Y: " .. cameraY);
-    y = y + 10;
+    y = y + text(
+        x,
+        y,
+        "Simba X Pos: " .. simbaX .. ":" .. simbaSubX,
+        "Simba Y Pos: " .. simbaY .. ":" .. simbaSubY,
+        "Simba Y Spd: " .. simbaSpdY .. ":" .. simbaSubSpdY,
+        "Camera X: " .. cameraX,
+        "Camera Y: " .. cameraY
+    );
     local pixel = "o o o o";
     if (simbaX % 4 == 0) then
         pixel = "x o o o";
@@ -282,8 +284,7 @@ local function printData()
     if (simbaX % 4 == 3) then
         pixel = "o o o x";
     end
-    text(x, y, "Pixel: " .. pixel);
-    y = y + 10;
+    y = y + text(x, y, "Pixel: " .. pixel);
 end
 
 local function resetCount()
