@@ -266,6 +266,7 @@ local function printData()
         x,
         y,
         "Simba X Pos: " .. simbaX .. ":" .. simbaSubX,
+        "Simba X Spd: " .. simbaSpdX .. ":" .. simbaSubSpdX,
         "Simba Y Pos: " .. simbaY .. ":" .. simbaSubY,
         "Simba Y Spd: " .. simbaSpdY .. ":" .. simbaSubSpdY,
         "Camera X: " .. cameraX,
