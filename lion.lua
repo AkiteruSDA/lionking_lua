@@ -203,9 +203,9 @@ local function printLinked()
         local extra = "";
         -- These cases are for geysers
         if isInactiveGeyser(addr) then
-            extra = "(" .. read_u16(addr + 0x4C) .. " R, " .. hexStr(read_u16(addr + 0x46), 2) .. " CD)";
+            extra = "(" .. read_u16(addr + 8) .. " X, " .. read_u16(addr + 0x4C) .. " R, " .. hexStr(read_u16(addr + 0x46), 2) .. " CD)";
         elseif isActiveGeyser(addr) then
-            extra = "(" .. read_u16(addr + 0x4C) .. " R, " .. hexStr(read_u16(addr + 0x46), 2) .. " CD: OK)";
+            extra = "(" .. read_u16(addr + 8) .. " X, " .. read_u16(addr + 0x4C) .. " R, " .. hexStr(read_u16(addr + 0x46), 2) .. " CD: OK)";
         end
         y = y + text(x, y, i .. ": " .. hexStr(addr) .. " " .. extra);
         addr = read_u16(addr + 2);
